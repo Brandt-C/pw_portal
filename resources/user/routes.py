@@ -25,7 +25,7 @@ class User(MethodView):
   @bp.arguments(UserSchema)
   def put(self, user_data, user_id):
     user = UserModel.query.get(get_jwt_identity())
-    if user and user.id == user_id:
+    if user and user.id == int(user_id):
       user.from_dict(user_data)
       user.commit()
       return { 'message': f'{user.username} updated'}, 202
@@ -34,7 +34,7 @@ class User(MethodView):
   @jwt_required()
   def delete(self, user_id):
     user = UserModel.query.get(get_jwt_identity())
-    if user == user_id:
+    if user and user.id == int(user_id):
       user.delete()
       return { 'message': f'User: {user.username} Deleted' }, 202
     return {'message': "Invalid username"}, 400
